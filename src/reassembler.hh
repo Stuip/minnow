@@ -2,6 +2,7 @@
 
 #include "byte_stream.hh"
 
+#include <list>
 #include <string>
 
 class Reassembler
@@ -31,4 +32,17 @@ public:
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+private:
+  std::vector<std::pair<uint64_t, std::pair<std::string, bool>>> buffer_{};
+
+  void insertToBuffer( uint64_t first_index, std::string data, bool is_last_substring);
+
+  void checkBuffer( Writer& output );
 };
+
+
+
+
+
+
+
