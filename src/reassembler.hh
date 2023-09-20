@@ -36,7 +36,7 @@ public:
 private:
   std::vector<std::pair<uint64_t, std::pair<std::string, bool>>> buffer_ {};
 
-  void insertToBuffer( uint64_t first_idx, std::string data, bool is_last_substring );
+  void insertToBuffer( uint64_t first_idx, std::string data, bool is_last_substring);
 
   void checkBuffer( Writer& output );
 };

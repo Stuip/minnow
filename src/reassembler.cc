@@ -33,6 +33,10 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
 
   if ( first_index > firstUnpoppedIndex ) {
     // 有些字节流提前到来, 则在Reassembler中储存
+    auto limit = firstUnpoppedIndex + remain;
+    if (first_index + data.length() > limit) {
+      data = data.substr(0, limit - first_index);
+    }
     insertToBuffer( first_index, data, is_last_substring );
     return;
   }
@@ -64,7 +68,7 @@ uint64_t Reassembler::bytes_pending() const
   return size_;
 }
 
-void Reassembler::insertToBuffer( uint64_t first_idx, std::string data, bool is_last_substring )
+void Reassembler::insertToBuffer( uint64_t first_idx, std::string data, bool is_last_substring)
 {
   if ( buffer_.empty() ) {
     buffer_.emplace_back( first_idx, std::make_pair( data, is_last_substring ) );
