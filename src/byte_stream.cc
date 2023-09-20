@@ -1,26 +1,31 @@
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 #include "byte_stream.hh"
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ), buffer_(queue<char>{}),
-                                              is_close_(false), error_(false), pushed_count_{0}, popped_count_{0}{
-}
+ByteStream::ByteStream( uint64_t capacity )
+  : capacity_( capacity )
+  , buffer_( queue<char> {} )
+  , is_close_( false )
+  , error_( false )
+  , pushed_count_ { 0 }
+  , popped_count_ { 0 }
+{}
 
 void Writer::push( string data )
 {
   auto avail = available_capacity();
-  if (avail == 0 || data.empty()){
-    return ;
+  if ( avail == 0 || data.empty() ) {
+    return;
   }
   uint idx = 0;
-  for(size_t i=avail;i>0;i--){
-    buffer_.push(data[idx++]);
+  for ( size_t i = avail; i > 0; i-- ) {
+    buffer_.push( data[idx++] );
     pushed_count_++;
-    if (idx == data.size()){
-      break ;
+    if ( idx == data.size() ) {
+      break;
     }
   }
 }
@@ -58,10 +63,10 @@ uint64_t Writer::bytes_pushed() const
 string_view Reader::peek() const
 {
   // Your code here.
-  if (has_error() || is_finished()){
+  if ( has_error() || is_finished() ) {
     return "";
   }
-  const std::string_view ans(&buffer_.front(), 1);
+  const std::string_view ans( &buffer_.front(), 1 );
   return ans;
 }
 
@@ -80,8 +85,8 @@ bool Reader::has_error() const
 void Reader::pop( uint64_t len )
 {
   // buffer 移除需要注意，需要移除的大小大于buffer当前所储存的字节
-  u_int64_t const real_len = len > bytes_buffered()?bytes_buffered():len;
-  for(uint64_t i=0;i<real_len;i++){
+  u_int64_t const real_len = len > bytes_buffered() ? bytes_buffered() : len;
+  for ( uint64_t i = 0; i < real_len; i++ ) {
     buffer_.pop();
     popped_count_++;
   }
