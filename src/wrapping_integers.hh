@@ -8,11 +8,12 @@
  *    - wraps back to zero when it reaches 2^32 - 1.
  */
 
+
+
 class Wrap32
 {
 protected:
   uint32_t raw_value_ {};
-
 public:
   explicit Wrap32( uint32_t raw_value ) : raw_value_( raw_value ) {}
 
