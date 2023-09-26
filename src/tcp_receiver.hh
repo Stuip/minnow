@@ -1,11 +1,16 @@
 #pragma once
 
+#include "wrapping_integers.hh"
 #include "reassembler.hh"
 #include "tcp_receiver_message.hh"
 #include "tcp_sender_message.hh"
 
 class TCPReceiver
 {
+private:
+  std::optional<Wrap32> zero_point {};
+  bool isSYN_ = false;
+  bool isFIN_ = false;
 public:
   /*
    * The TCPReceiver receives TCPSenderMessages, inserting their payload into the Reassembler
