@@ -41,6 +41,19 @@ private:
   // IP (known as Internet-layer or network-layer) address of the interface
   Address ip_address_;
 
+  // 映射: IP地址 -> EthernetAddress
+  std::unordered_map<uint32_t, std::pair<EthernetAddress, size_t >> mappings_{};
+
+  // 要发送的帧, 因为这些帧已经知道了它们目的地址的Mac地址
+  std::deque<EthernetFrame> ready_frames_;
+  // 未发送的帧，因为不知道当前的目的地址的Mac地址，所以暂存起来
+  std::deque<std::pair<InternetDatagram, Address>> unready_frames_;
+
+
+  size_t timestamp_{0};
+  std::unordered_map<uint32_t, uint64_t> arp_times_{};
+
+
 public:
   // Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer)
   // addresses
