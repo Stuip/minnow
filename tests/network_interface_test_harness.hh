@@ -40,8 +40,8 @@ struct SendDatagram : public Action<NetworkInterface>
 template<class T>
 bool equal( const T& t1, const T& t2 )
 {
-  std::vector<Buffer> t1s = serialize( t1 );
-  std::vector<Buffer> t2s = serialize( t2 );
+  const std::vector<Buffer> t1s = serialize( t1 );
+  const std::vector<Buffer> t2s = serialize( t2 );
 
   std::string t1concat;
   for ( const auto& x : t1s ) {
@@ -135,6 +135,14 @@ struct Tick : public Action<NetworkInterface>
   explicit Tick( const size_t ms ) : _ms( ms ) {}
 };
 
+inline std::string concat( std::vector<Buffer>& buffers )
+{
+  return std::accumulate(
+    buffers.begin(), buffers.end(), std::string {}, []( const std::string& x, const Buffer& y ) {
+      return x + static_cast<std::string>( y );
+    } );
+}
+
 inline std::string summary( const EthernetFrame& frame )
 {
   std::string out = frame.header.to_string() + ", payload: ";
@@ -142,7 +150,8 @@ inline std::string summary( const EthernetFrame& frame )
     case EthernetHeader::TYPE_IPv4: {
       InternetDatagram dgram;
       if ( parse( dgram, frame.payload ) ) {
-        out.append( "IPv4: " + dgram.header.to_string() );
+        out.append( "IPv4: " + dgram.header.to_string() + " payload=\""
+                    + Printer::prettify( concat( dgram.payload ) ) + "\"" );
       } else {
         out.append( "bad IPv4 datagram" );
       }
